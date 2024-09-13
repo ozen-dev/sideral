@@ -6,8 +6,7 @@ use axum::{
 };
 use std::net::SocketAddr;
 
-
-async fn summon(headers: HeaderMap) -> impl IntoResponse {
+async fn summon_handler(headers: HeaderMap) -> impl IntoResponse {
     let user_agent_value = headers.get("User-Agent").unwrap();
     let user_agent = user_agent_value.to_str().unwrap();
 
@@ -21,9 +20,9 @@ async fn summon(headers: HeaderMap) -> impl IntoResponse {
 
 #[tokio::main]
 async fn main() {
-    let app = Router::new().route("/", get(summon));
-    let address = SocketAddr::from(([0, 0, 0, 0], 3000));
+    let app = Router::new().route("/", get(summon_handler));
 
+    let address = SocketAddr::from(([0, 0, 0, 0], 3000));
     axum::Server::bind(&address)
         .serve(app.into_make_service())
         .await
